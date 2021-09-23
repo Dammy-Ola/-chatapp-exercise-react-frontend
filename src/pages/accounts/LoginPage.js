@@ -1,25 +1,40 @@
-import React, { useState } from 'react'
-// import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-// import { useDispatch, useSelector } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { login } from '../../redux/actions/authActions'
 
 const LoginPage = ({ location, history }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { loading, error, authUser } = userLogin
+
   const redirect = location.search ? location.search.split('=')[1] : '/'
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (authUser) {
+      toast.success("You've Successfully Login")
+
+      setTimeout(() => {
+        history.push('/')
+      }, 1000)
+    }
+  }, [dispatch, history, redirect, authUser])
 
   const submitHandler = (e) => {
     e.preventDefault()
 
-    // dispatch(
-    //   login({
-    //     email,
-    //     password,
-    //   })
-    // )
+    dispatch(
+      login({
+        email,
+        password,
+      })
+    )
   }
 
   return (
@@ -31,8 +46,8 @@ const LoginPage = ({ location, history }) => {
         </h3>
         <form onSubmit={submitHandler} className='p-5'>
           <div className='mb-5'>
-            {/* {error && <h5 className='text-red-600'>{error}</h5>}
-            {loading && <h5>Loading...</h5>} */}
+            {error && <h5 className='text-red-600'>{error}</h5>}
+            {loading && <h5>Loading...</h5>}
           </div>
 
           <div className='mb-5'>

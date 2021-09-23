@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useDispatch } from 'react-redux'
 import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import MuiDrawer from '@mui/material/Drawer'
@@ -17,6 +18,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import { logout } from '../redux/actions/authActions'
 
 const drawerWidth = 240
 
@@ -97,6 +100,13 @@ export default function MiniDrawer() {
     setOpen(false)
   }
 
+  const dispatch = useDispatch()
+
+  const logoutHandler = () => {
+    dispatch(logout())
+    console.log('logout')
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -150,6 +160,12 @@ export default function MiniDrawer() {
               <ListItemText primary={text} />
             </ListItem>
           ))}
+          <ListItem button onClick={logoutHandler}>
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary='Logout' />
+          </ListItem>
         </List>
       </Drawer>
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
