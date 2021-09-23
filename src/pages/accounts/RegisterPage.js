@@ -1,27 +1,48 @@
-import React, { useState } from 'react'
-// import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-// import { useDispatch, useSelector } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { register } from '../../redux/actions/authActions'
 
 const RegisterPage = ({ location, history }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [message, setMessage] = useState('')
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { loading, error, authUser } = userLogin
 
   const redirect = location.search ? location.search.split('=')[1] : '/'
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (authUser) {
+      toast.success("You've Successfully Register")
+
+      setTimeout(() => {
+        history.push('/')
+      }, 1000)
+    }
+  }, [dispatch, history, redirect, authUser])
 
   const submitHandler = (e) => {
     e.preventDefault()
 
-    // dispatch(
-    //   login({
-    //     email,
-    //     password,
-    //   })
-    // )
+    if (password !== confirmPassword) {
+      setMessage('Password Do Not Match')
+    } else {
+      dispatch(
+        register({
+          name,
+          email,
+          password,
+        })
+      )
+    }
   }
   return (
     <div className='flex justify-center items-center h-screen bg-gray-900'>
@@ -32,8 +53,9 @@ const RegisterPage = ({ location, history }) => {
         </h3>
         <form onSubmit={submitHandler} className='p-5'>
           <div className='mb-5'>
-            {/* {error && <h5 className='text-red-600'>{error}</h5>}
-                {loading && <h5>Loading...</h5>} */}
+            {message && <h5 className='text-red-600'>{message}</h5>}
+            {error && <h5 className='text-red-600'>{error}</h5>}
+            {loading && <h5>Loading...</h5>}
           </div>
 
           <div className='mb-5'>
